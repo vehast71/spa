@@ -19,70 +19,84 @@ $(function(){
 init();
 
 function init(){
-    var countPages = list.length/Page.recordPerPage;
-    Page.countPages = Math.ceil(countPages);console.log('page:',list.length,countPages,Page.countPages);
+    Page.recordAll = list.length;
+    var countPages = Page.recordAll/Page.recordPerPage;
+    Page.countPages = Math.ceil(countPages);console.log('page:',list,list.length,countPages,Page.countPages);
+    
+    var hash = location.hash;
+    var test = [];
+    test = hash.match(/#(\d)/);
+    if(test !== null){
+        hash = Number(test[1]);
+    }else{
+        hash = 1;
+    }
+    Page.recordStart = (Number(hash)-1)*Page.recordPerPage;
+    if((Page.recordAll-Page.recordStart)<Page.recordPerPage){
+        Page.recordFinish = Page.recordAll;
+    }else{
+        Page.recordFinish = Page.recordStart+Page.recordPerPage;
+    }
     render(list);
 }
 
 function pagination(){
-    // var countPages = list.length/Page.recordPerPage;
-    // Page.countPages = Math.ceil(countPages);console.log('page:',list.length,countPages,Page.countPages);
     var str = '';
     for(i=1;i<=Page.countPages;i++){
-        str += `<a href="#page${i}">page${i}</a>`;
+        str += `<a href="#${i}">page${i}</a>`;
     }
     $('#page').html(str);
-}    
+}
+$(window).on('hashchange',function(){
+// });
+// $('#page').on('click','a',function(){//console.log(123,list,Counts);
+var hash = location.hash;//console.log('hash-:',hash);
+    var test = hash.match(/#(\d)/);//console.log('test-:',test);
+    if(test !== null){//console.log('test-not-null:',test);
+        hash = Number(test[1]);
+    }else{//console.log('test-null:',test);
+        hash = 1;
+    }
+    Page.recordStart = (Number(hash)-1)*Page.recordPerPage;
+    if((Page.recordAll-Page.recordStart)<Page.recordPerPage){
+        Page.recordFinish = Page.recordAll;
+    }else{
+        Page.recordFinish = Page.recordStart+Page.recordPerPage;
+    }
+    //console.log('hash+:',hash,Page,list);
+    render(list);    
+});
 
-function render(list){
+function render(list){//console.log('ii:',list);
     var str = '<table>';
     str +="<tr><th id='date'>date</th><th id='name'>name</th><th id='count'>count</th><th id='r'>r</th></tr>";
-        list.forEach(function(e,i){
-            ++i;
-            if(i>Page.countPages){
-                return;
-            }
+        for(i=Page.recordStart;i<Page.recordFinish;i++){console.log('i:',i,list[i]);
             str += `<tr>
-            <td>${e.date.getDate()}.${e.date.getMonth()+1}.${e.date.getFullYear('yyyy')}</td>
-            <td>${e.name}</td>
-            <td>${e.count}</td>
-            <td>${e.r}</td>
+            <td>${list[i].date.getDate()}.${list[i].date.getMonth()+1}.${list[i].date.getFullYear('yyyy')}</td>
+            <td>${list[i].name}</td>
+            <td>${list[i].count}</td>
+            <td>${list[i].r}</td>
             </tr>`;
-        });
+        }
         str += '</table>';
         $('#app').html(str);
         pagination();
-} 
-    // render(list);
-
+}
     $('#app').on('click','table tr th',function(e){
         var id = $(this).attr('id');
         var _order;
         _order = (Counts[id] % 2 === 0) ? -1 : 1;
-        //     _order = -1;
-        // }else{
-        //     _order = 1; 
-        // }
         Counts[id]++;
-        // var field = id;
-        // if(id === 'date'){
-        //     console.log('date');
-        // }else if(id === 'name'){
-        //     console.log('name');
-        // }
-        // list.prototype.mySort = function (field,order){
         function mySort(list,field,order){console.log(10,list,field,order);
             function sOrder(a, b) {
                 if (a[field] > b[field]) return order;
                 else if (a[field] < b[field]) return -order;
                 else return 0;
             }
-            // this.sort(sOrder);
             list.sort(sOrder);
         }
         list_new = list.slice();
         mySort(list_new,id,_order);
-        // mySort(list,id,_order);
         render(list_new);console.log(100,list,list_new);
     });
 
