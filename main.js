@@ -15,10 +15,12 @@ $(function(){
         {date:new Date(2020,11,02),name:'name2',count:100,r:250},
         {date:new Date(2020,11,03),name:'name3',count:300,r:150},
     ];
+    var list_new = [];
 
-init();
+init(list);
 
-function init(){
+function init(list){
+    var list = list;
     Page.recordAll = list.length;
     var countPages = Page.recordAll/Page.recordPerPage;
     Page.countPages = Math.ceil(countPages);console.log('page:',list,list.length,countPages,Page.countPages);
@@ -64,10 +66,22 @@ var hash = location.hash;//console.log('hash-:',hash);
         Page.recordFinish = Page.recordStart+Page.recordPerPage;
     }
     //console.log('hash+:',hash,Page,list);
-    render(list);    
+    // console.log('typeof-:',!!list_new.length,typeof(list_new),list_new.length,list);
+
+    var reset = $('#app').attr('reset');
+    reset = Number(reset);
+    if(reset){
+        list_new = [];
+        $('#app').attr('reset',0);
+    }
+    if(!list_new.length){
+        list_new = list.slice();//console.log('slice');
+    }
+    render(list_new);    
 });
 
 function render(list){//console.log('ii:',list);
+    var list = list;
     var str = '<table>';
     str +="<tr><th id='date'>date</th><th id='name'>name</th><th id='count'>count</th><th id='r'>r</th></tr>";
         for(i=Page.recordStart;i<Page.recordFinish;i++){console.log('i:',i,list[i]);
@@ -97,6 +111,9 @@ function render(list){//console.log('ii:',list);
         }
         list_new = list.slice();
         mySort(list_new,id,_order);
+
+        init(list_new);
+
         render(list_new);console.log(100,list,list_new);
     });
 
@@ -127,15 +144,21 @@ function render(list){//console.log('ii:',list);
         });
         console.log('1000:',list,list_new);
         if(list_new.length){
+            init(list_new);
             render(list_new);
+            $('#page').show();
         }else{
             $('#app').html(WARNING);
+            $('#page').hide();
+            // location.hash = '';
         }
         
     });
 
     $('#reset').on('click',function(){
+        $('#app').attr('reset',1);
         render(list);
+        $('#page').show();
     });
 
 });
