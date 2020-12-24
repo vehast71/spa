@@ -7,6 +7,7 @@ $(async function(){
 
     var Page = {}
         Page.recordPerPage = 3;
+        Page.hash;
 
     const WARNING = "<span class='warning'>data don't found!</span>";
     var res = [];
@@ -49,21 +50,36 @@ function init(list){
     }else{
         hash = 1;
     }
-    Page.recordStart = (Number(hash)-1)*Page.recordPerPage;
+    Page.hash = hash;
+    page_setting();
+    // Page.recordStart = (Number(hash)-1)*Page.recordPerPage;
+    // if((Page.recordAll-Page.recordStart)<Page.recordPerPage){
+    //     Page.recordFinish = Page.recordAll;
+    // }else{
+    //     Page.recordFinish = Page.recordStart+Page.recordPerPage;
+    // }
+    render(list);
+    // addClassActive();
+}
+function addClassActive(){
+    $('#page a').removeClass('active');
+    $('#page a[href="#'+Page.hash+'"]').addClass('active');
+}
+function page_setting(){
+    Page.recordStart = (Number(Page.hash)-1)*Page.recordPerPage;
     if((Page.recordAll-Page.recordStart)<Page.recordPerPage){
         Page.recordFinish = Page.recordAll;
     }else{
         Page.recordFinish = Page.recordStart+Page.recordPerPage;
     }
-    render(list);
 }
-
 function pagination(){
     var str = '';
     for(i=1;i<=Page.countPages;i++){
         str += `<a href="#${i}">page${i}</a>`;
     }
     $('#page').html(str);
+    addClassActive();
 }
 $(window).on('hashchange',function(){
 // });
@@ -75,12 +91,14 @@ var hash = location.hash;//console.log('hash-:',hash);
     }else{//console.log('test-null:',test);
         hash = 1;
     }
-    Page.recordStart = (Number(hash)-1)*Page.recordPerPage;
-    if((Page.recordAll-Page.recordStart)<Page.recordPerPage){
-        Page.recordFinish = Page.recordAll;
-    }else{
-        Page.recordFinish = Page.recordStart+Page.recordPerPage;
-    }
+    Page.hash = hash;
+    page_setting();
+    // Page.recordStart = (Number(hash)-1)*Page.recordPerPage;
+    // if((Page.recordAll-Page.recordStart)<Page.recordPerPage){
+    //     Page.recordFinish = Page.recordAll;
+    // }else{
+    //     Page.recordFinish = Page.recordStart+Page.recordPerPage;
+    // }
     //console.log('hash+:',hash,Page,list);
     // console.log('typeof-:',!!list_new.length,typeof(list_new),list_new.length,list);
 
@@ -93,7 +111,8 @@ var hash = location.hash;//console.log('hash-:',hash);
     if(!list_new.length){
         list_new = list.slice();//console.log('slice');
     }
-    render(list_new);    
+    render(list_new); 
+    // addClassActive();   
 });
 
 function render(list){console.log('ii:',list,Page);

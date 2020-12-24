@@ -71,8 +71,10 @@ cursor:none;
 #page a{
     text-decoration: none;
     padding: 5px;
-    margin: 5px;
 }
 #page a.active{
     font-weight: 700;
 }
+/* #page a[href="#1"]{
+    font-weight: 700;
+} */
