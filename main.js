@@ -1,4 +1,4 @@
-$(function(){
+$(async function(){
     var Counts = {}
         Counts.date = 0;
         Counts.name = 0;
@@ -9,12 +9,27 @@ $(function(){
         Page.recordPerPage = 2;
 
     const WARNING = "<span style='color:red'>data don't found!</span>";
-
+    var res = [];
+    // async function getData(){
+        var get = await fetch('./get-data.php');
+        res = await get.json();
+        console.log('get:',res);
+        // res = [{"dat":"23.12.2020","name":"name1","count":30,"r":100},{"dat":"23.12.2020","name":"name2","count":20,"r":300},{"dat":"23.12.2020","name":"name3","count":10,"r":200}];
+        // return res;
+    // }
+    
     var list = [
         {date:new Date(2020,11,01),name:'name1',count:200,r:350},
         {date:new Date(2020,11,02),name:'name2',count:100,r:250},
         {date:new Date(2020,11,03),name:'name3',count:300,r:150},
     ];
+    
+    console.log('get_list-:',res,list);
+    list = res;
+    // list = getData();
+
+    console.log('get_list+:',list);
+
     var list_new = [];
 
 init(list);
@@ -86,7 +101,7 @@ function render(list){//console.log('ii:',list);
     str +="<tr><th id='date'>date</th><th id='name'>name</th><th id='count'>count</th><th id='r'>r</th></tr>";
         for(i=Page.recordStart;i<Page.recordFinish;i++){console.log('i:',i,list[i]);
             str += `<tr>
-            <td>${list[i].date.getDate()}.${list[i].date.getMonth()+1}.${list[i].date.getFullYear('yyyy')}</td>
+            <td>${list[i].date}</td>
             <td>${list[i].name}</td>
             <td>${list[i].count}</td>
             <td>${list[i].r}</td>
@@ -143,9 +158,9 @@ function render(list){//console.log('ii:',list);
             }
         });
         console.log('1000:',list,list_new);
-        if(list_new.length){
+        if(list_new.length){console.log('if');
             init(list_new);
-            render(list_new);
+            // render(list_new);
             $('#page').show();
         }else{
             $('#app').html(WARNING);
