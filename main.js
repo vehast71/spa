@@ -8,7 +8,7 @@ $(async function(){
     var Page = {}
         Page.recordPerPage = 3;
 
-    const WARNING = "<span style='color:red'>data don't found!</span>";
+    const WARNING = "<span class='warning'>data don't found!</span>";
     var res = [];
     // async function getData(){
         var get = await fetch('./get-data.php');
