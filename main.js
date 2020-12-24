@@ -6,7 +6,7 @@ $(async function(){
         Counts.r = 0;
 
     var Page = {}
-        Page.recordPerPage = 2;
+        Page.recordPerPage = 3;
 
     const WARNING = "<span style='color:red'>data don't found!</span>";
     var res = [];
@@ -95,7 +95,7 @@ var hash = location.hash;//console.log('hash-:',hash);
     render(list_new);    
 });
 
-function render(list){//console.log('ii:',list);
+function render(list){console.log('ii:',list,Page);
     var list = list;
     var str = '<table>';
     str +="<tr><th id='date'>date</th><th id='name'>name</th><th id='count'>count</th><th id='r'>r</th></tr>";
@@ -111,49 +111,58 @@ function render(list){//console.log('ii:',list);
         $('#app').html(str);
         pagination();
 }
+
+function mySort(list,field,order){console.log(10,list,field,order);
+    function sOrder(a, b) {
+        if (a[field] > b[field]) return order;
+        else if (a[field] < b[field]) return -order;
+        else return 0;
+    }
+    list.sort(sOrder);
+}
+//sorting
     $('#app').on('click','table tr th',function(e){
         var id = $(this).attr('id');
         var _order;
         _order = (Counts[id] % 2 === 0) ? -1 : 1;
-        Counts[id]++;
-        function mySort(list,field,order){console.log(10,list,field,order);
-            function sOrder(a, b) {
-                if (a[field] > b[field]) return order;
-                else if (a[field] < b[field]) return -order;
-                else return 0;
-            }
-            list.sort(sOrder);
-        }
+        Counts[id]++;//console.log('Counts:',Counts);
+
         list_new = list.slice();
         mySort(list_new,id,_order);
 
         init(list_new);
 
-        render(list_new);console.log(100,list,list_new);
+        // render(list_new);console.log(100,list,list_new);
     });
-
+//filtering
     $('#get').on('click',function(){
         var text = $('#s_text').val();
         var field = $('#s_field').val();
         var icon = $('#s_icon').val();
         var res;
         var list_new = [];console.log(1,text,field,icon);
-        list_new = list.filter(function(e,i){
+        list_new = list.filter(function(e,i){console.log('field:',field,e[field],Number(text),e[field]>Number(text));
             switch(icon){
                 case 'eq':
                     if(e[field]===Number(text)) return e;
                 break;
-                case 'more':
+                case 'more':console.log('more:');
                     if(e[field]>Number(text)) return e;
                 break;
                 case 'less':
                     if(e[field]<Number(text)) return e;
                 break;
                 case 'in':
-                    res = e[field].indexOf(text);
-                    if(res !== -1){
-                        return e;
+                    if(typeof(e[field]) === 'string'){
+                        res = e[field].indexOf(text);
+                        if(res !== -1){
+                            return e;
+                        }                                            
+                    }else{
+                        $('#app').html(WARNING);
+                        $('#page').hide();    
                     }
+                    
                 break;                
             }
         });
@@ -172,7 +181,8 @@ function render(list){//console.log('ii:',list);
 
     $('#reset').on('click',function(){
         $('#app').attr('reset',1);
-        render(list);
+        init(list);
+        // render(list);
         $('#page').show();
     });
 
