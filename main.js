@@ -18,19 +18,20 @@ $(async function(){
         // return res;
     // }
     
-    var list = [
-        {date:new Date(2020,11,01),name:'name1',count:200,r:350},
-        {date:new Date(2020,11,02),name:'name2',count:100,r:250},
-        {date:new Date(2020,11,03),name:'name3',count:300,r:150},
-    ];
+    // var list = [
+    //     {date:new Date(2020,11,01),name:'name1',count:200,r:350},
+    //     {date:new Date(2020,11,02),name:'name2',count:100,r:250},
+    //     {date:new Date(2020,11,03),name:'name3',count:300,r:150},
+    // ];
     
     console.log('get_list-:',res,list);
-    list = res;
+    var list = res;
     // list = getData();
 
     console.log('get_list+:',list);
 
-    var list_new = [];
+    // var list_new = [];
+    var list_new = list.slice();
 
 init(list);
 
@@ -127,7 +128,7 @@ function mySort(list,field,order){console.log(10,list,field,order);
         _order = (Counts[id] % 2 === 0) ? -1 : 1;
         Counts[id]++;//console.log('Counts:',Counts);
 
-        list_new = list.slice();
+        // list_new = list.slice();
         mySort(list_new,id,_order);
 
         init(list_new);
@@ -140,7 +141,7 @@ function mySort(list,field,order){console.log(10,list,field,order);
         var field = $('#s_field').val();
         var icon = $('#s_icon').val();
         var res;
-        var list_new = [];console.log(1,text,field,icon);
+        // var list_new = [];console.log(1,text,field,icon);
         list_new = list.filter(function(e,i){console.log('field:',field,e[field],Number(text),e[field]>Number(text));
             switch(icon){
                 case 'eq':
